@@ -30,13 +30,16 @@ myMatrix <- matrix(
 )
 myMatrix
 
+# arrays support more than two dimensions. For instance the following variable contains a three dimension variable
+# which translates to an array of 3 positions where on each position there is a 2 X 2 matrix
+
 multiDimensionArray <- array(
   data = 1:9,
   dim = c(2,2,3)
 )
 multiDimensionArray
 
-# list can contain heterogeneous values, vector only allows homogeneous values
+# list can contain heterogeneous values, vector only allows homogeneous values. lists supports different data types
 myList <- list(FALSE, 100L, 3.1645, "abc")
 myList
 
@@ -68,7 +71,7 @@ myDataFrame[["Name"]]
 # get the value by column name shorter syntax. This method is preferred
 myDataFrame$Name
 
-# get values from a subset of the data frame. Indicating which rows
+# get values from a subset of the data frame. Indicating which rows. Sub setting subsetting
 myDataFrame[c(1,4), ]
 
 # get values from a subset indicating a sequence 
@@ -208,6 +211,12 @@ m3 <- read.csv('out.csv', header = FALSE)
 # are the same type so we cast the result as a matrix
 m3 <- as.matrix(m3)
 class(m3)
+
+# get the names of the columns
+names(m3)
+
+# changing column names
+names(m3)[2] <- "V3"
 
 # transpose the matrix. Change rows by columns
 m4 <- t(m3)
@@ -383,3 +392,125 @@ dbSendQuery(con, "insert into crew_members values (3, 'veras-man', 'Jayne', 'Cob
 rs <- dbSendQuery(con, "select * from crew_members")
 fetch(rs)
 dbClearResult(rs)
+
+# count missing values in a data frame
+sum(is.na(theDataFrame))
+
+# exclude observations with missing values from the data frame
+theDataFrame <- na.omit(theDataFrame)
+
+# substitute a string on a column. In the following example replace the desire text with empty string
+theDataFrame$theColumn <- sub(" the text we want to replace", "", theDataFrame$theColumn)
+
+# replace several values in a string with other string
+currencyString <- "$100.5k"
+currencyString2 <- "$1000.89M"
+
+currencyWithoutSymbols <- as.numeric(gsub("[$|k|M]","", currencyString))
+print(currencyWithoutSymbols)
+currencyWithoutSymbols2 <- gsub("[$|k|M]","", currencyString2)
+print(currencyWithoutSymbols2)
+
+# scale values to millions
+currencyScaled <- ifelse(grepl("k", currencyString), (as.numeric(currencyWithoutSymbols)*0.001), as.numeric(currencyWithoutSymbols))
+currencyScaled
+
+currencyScaled2 <- ifelse(grepl("M", currencyString2), as.numeric(currencyWithoutSymbols2), as.numeric(currencyWithoutSymbols2)*1000)
+currencyScaled2
+
+# the sapply function allows you to execute a function to all elements in a collection. For example:
+# df$valueToAssing <- sapply(df$functionArgumentValue, functionToExecute)
+# the function sapply returns a vector
+
+# descriptive statistics refer for instance to summarize information of column
+# the first quartile is the value that cuts off 25% of the values
+# the median is the value that separates the lower half from the upper half or second quantile
+# the mean is the average of all the values
+# the third quartile is the value that cuts off 75% of the values
+
+# qualitative variables are considered categorical variables. Also called nominal variables
+# quantitative variables contains numeric values
+# the mode refers to the most frequently value in the data
+# the variance is a measure of how far the values are spread out
+# the standard deviation is the square root of the variance
+# the shape of the data means:
+# skewness is a measure of the asymmetry of the distribution of values
+# kurtosis is a measure of how sharply peaked or relatively flat the distribution of values are
+
+# quantitative bi-variate analysis 
+# can be performed with covariance and correlation 
+# calculate frequency of a value in data set use the function table
+library(ggmap)
+data("crime")
+table(crime$location)
+
+# getting the mode of the data. The most repeated value in the data. The output indicate that apartment is the
+# most frequent value and that it appears in the fifth position/index of the frequency table
+which.max(table(crime$location))
+
+# getting the quantiles
+quantile(crime$hour)
+
+# get a specific quantile value
+quantile(crime$hour, 0.25)
+quantile(crime$hour, 0.85)
+
+# difference between third and first quantile values
+IQR(crime$hour)
+
+# find the spread of the data. The smaller the number the smaller the spread and the other way around
+var(crime$hour)
+sd(crime$hour)
+
+# find the skewness and kurtosis
+library(moments)
+
+# if the skewness is zero then the distribution of data is perfectly symmetric. If the value is negative then
+# the distribution of data is negatively skewed that is the tail is skewed to the left
+# If the skewness is positive then the distribution of data is positive skewed that is the tail is skewed to the right
+# In addition the larger the value the greater the skewness is
+skewness(crime$hour)
+
+# the kurtosis returns a value that is either greater than, less than or equal to 3
+# A value of 3 means the shape of the peak of the distribution is the normal distribution
+# A value less than 3 means the peak is flatter than the normal distribution
+# A value greater than 3 means the peak is steeper than the normal distribution
+kurtosis(crime$hour)
+
+# to display both values graphically lets create a plot. Plot gaussian bell visualize gaussian bell
+plot(density(crime$hour))
+
+# bi-variate qualitative analysis. Create a contingency table or frequencies between two variables and its intersection
+table(crime$offense, crime$location)
+
+# bi-variate analysis of two quantitative values
+# covariance that is the degree to which two variables vary with one another
+# If the covariance is positive it means that larger values of the first value correspond to larger values of the second
+# variable in general
+# If the value is negative then the two variables would inversely vary with one another that is larger values of the first
+# variable would correspond to smaller values of the second variable in general
+cov(diamonds$depth, diamonds$price)
+cov(diamonds$table, diamonds$price)
+
+# if you need to compare two covariance values to determine which value correlates more strongly with the variable 
+# been evaluated (in the previous example the diamond price) in order to compare the correlation in an apples apples way
+# we need to use the correlation coefficient
+# Correlation coefficient is covariance on a standardized scale
+# For example -1 is a total negative correlation 
+# 0 is no correlation 
+# +1 is a total positive correlation
+# in the following example we can say that diamonds price correlates more with diamond table than with diamond depth
+# but the value 0.1271339 is small so it is not suitable to predict the diamond price
+cor(diamonds$depth, diamonds$price)
+cor(diamonds$table, diamonds$price)
+
+# bi-variate analysis for both qualitative and quantitative variable
+# tapply function allows to execute a function on each value of our data set but also allows to group those values by a
+# factor
+# Notice the first argument is the quantitative value, the second argument is the value we want to group and third 
+# argument is the function
+tapply(diamonds$price, diamonds$cut, mean)
+
+# the summary method provides statistics for both qualitative and quantitatives variables
+summary(diamonds)
+summary(crime)

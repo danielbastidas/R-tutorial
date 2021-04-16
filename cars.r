@@ -1,5 +1,6 @@
 setwd("/home/danielbastidas/git-repo/R-tutorial")
 
+# read table allows you to read text files indicating the separator character
 cars <- read.table(
   file = "cars.txt",
   header = TRUE,
@@ -113,7 +114,7 @@ sd(cars$Fuel.Economy)
 # sum all the values of a column
 sum(cars$Fuel.Economy)
 
-# get the correlation (how to values relate with each other). The result of the correlation can be read
+# get the correlation (how the values relate with each other). The result of the correlation can be read
 # in the following way: correlation = -0.8494824 which means that there is a strong (near to -1) negative
 # correlation. The fuel economy decreases while the number of cylinders increases. More cylinders, more 
 # power, more fuel consumption
