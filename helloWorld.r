@@ -455,7 +455,7 @@ quantile(crime$hour)
 quantile(crime$hour, 0.25)
 quantile(crime$hour, 0.85)
 
-# difference between third and first quantile values
+# difference between third and first quantile values. IQR stands for inter quantile
 IQR(crime$hour)
 
 # find the spread of the data. The smaller the number the smaller the spread and the other way around
@@ -498,7 +498,8 @@ cov(diamonds$table, diamonds$price)
 # Correlation coefficient is covariance on a standardized scale
 # For example -1 is a total negative correlation 
 # 0 is no correlation 
-# +1 is a total positive correlation
+# +1 is a total positive correlation and the correlation is stronger if the values are close to the line instead of spread
+# out
 # in the following example we can say that diamonds price correlates more with diamond table than with diamond depth
 # but the value 0.1271339 is small so it is not suitable to predict the diamond price
 cor(diamonds$depth, diamonds$price)
@@ -511,6 +512,166 @@ cor(diamonds$table, diamonds$price)
 # argument is the function
 tapply(diamonds$price, diamonds$cut, mean)
 
-# the summary method provides statistics for both qualitative and quantitatives variables
+# the summary method provides statistics for both qualitative and quantitative variables
 summary(diamonds)
 summary(crime)
+
+# 1. Qualitative uni-variate analysis plots graphics visualizations
+# we are typically interested in the frequency of the observations
+# bar chart (how observations relates to each other), pie chart (how observations relates to the whole)
+
+# 2. Quantitative uni-variate analysis
+# we are typically interested in the location, spread and shape of the data
+# gaussian or bell distribution, dot plot, box plot, histogram, density plot (tells us the likelihood a number will 
+# be found at a specific point in line)
+
+# 3. Qualitative bi-variate analysis
+# er are typically interested in the frequency of the categorical or qualitative variables and the intersection
+# between them
+# spine plot, mosaic plot
+
+# 4. quantitative bi-variate analysis
+# we are typically looking at the relation between two numerical variables
+# scatter plot: this graphic tells us about the correlation between the two variables. If the line is flat it means there
+# is no correlation between the variables. If the lines goes from the lower left corner to the upper right corner
+# there is a positive correlation (when one variable increases its value the other one also increases its value).
+# If the line goes from the upper left corner to the lower right corner it means there is a negative correlation between
+# the two variables (when the value of one variable increases the value of the other variable decreases)
+# line graph can be used when one of the variables is a time variable
+
+# 5. qualitative and quantitative variable analysis
+# bar chart, multiple box plots
+
+# create a bar chart of a uni-variate qualitative variable
+plot(crime$offense)
+
+# create a pie chart of a uni-variate qualitative variable
+pie(table(crime$offense))
+
+# create a dot plot of a uni-variate quantitative variable
+plot(
+  x = diamonds$price,
+  y = rep(0, nrow(diamonds)),
+  ylab = "",
+  yaxt = "n"
+)
+
+# create a box plot
+boxplot(
+  x = diamonds$price,
+  xlab = "Price",
+  horizontal = TRUE
+)
+
+# create a histogram
+hist(diamonds$price)
+
+# create a more coarse grained histogram. The break parameter indicates the number of bins or rectangles
+hist(diamonds$price, breaks = 10)
+
+# create a more fine grained histogram using more bins
+hist(diamonds$price, breaks = 30)
+
+# create a density plot (gauss bell). 
+# On the Y axis we have the relative likelihood from 0 to 1 that an observation will be found at the corresponding 
+# location on the X axis for this variable
+plot(density(diamonds$price))
+
+# add dot plot to base of density plot
+points(
+  x = diamonds$price,
+  y = rep(-0.005, nrow(diamonds))
+)
+
+# bi-variate visualization for two qualitative (categorical) variables
+# create a spine plot
+sum(is.na(crime))
+crime <- na.omit(crime)
+sum(is.na(crime))
+
+crime2 <- crime
+crime2$location <- as.factor(crime2$location)
+crime2$offense <- as.factor(crime2$offense)
+
+spineplot(
+  x = crime2$location,
+  y = crime2$offense
+)
+
+# create mosaic plot. The LAS parameter is used to rotate the X axis in order to make room and show all categories.
+# There are only 3 possible values for LAS from 1 to 3
+mosaicplot(
+  x = table(crime2$location,crime2$offense),
+  las = 1
+)
+
+# bi-variate analysis for two quantitative variables 
+# create a scatter plot
+plot(
+  x = diamonds$depth,
+  y = diamonds$price
+)
+
+# plot a line graph. The l parameter indicates the graphic is a line
+plot(
+  x = table(crime2$date),
+  type = "l"
+)
+
+# bi-variate analysis for both qualitative and quantitative variables
+# create a bar graph
+barplot(tapply(diamonds$price, diamonds$color, mean))
+barplot(
+  height = tapply(diamonds$price, diamonds$color, mean),
+  las = 1
+)
+
+# create a box plot
+plot(
+  x = diamonds$color,
+  y = diamonds$price
+)
+
+# how to visualize the whole data at once
+plot(diamonds)
+
+# how to tune the plot
+plot(
+  x = crime$offense,
+  main = "Count of crimes by offense",
+  xlab = "Offense",
+  ylab = "Count of offense",
+  col = "#b3cde3"
+)
+
+# view help for plots and parameters
+?plot
+?par
+
+# types of data analysis
+# descriptive: describing the features of our data in meaningful ways. This is the easiest to carried out
+# exploratory: is the second easiest data analysis.
+# inferential: testing a hypothesis about the world by collecting a sample of data and generalizing to a larger population
+# predictive: using current or historical data to make predictions about the future or otherwise unknown values
+# causal: determining how modifying one variable while holding all other variables constant changes some outcome variable
+# mechanistic: creates a mathematical model that captures the exact changes in all variables as one variable is modified.
+# It is only possible in systems that have variables that can be modeled as deterministic, that is non-probabilistic set
+# of equations. For example a mechanistic model of an automobile accelerating when the gas pedal is pressed using data
+# various sensors in the automobile
+
+# how to determine how many unique values are in a data set column
+unique(crime$location)
+unique(crime$offense)
+
+# looking the strong correlation between the iris petal length and iris petal width in the iris data set
+data("iris")
+
+cor(
+  x = iris$Petal.Length,
+  y = iris$Petal.Width
+)
+
+# summary of linear model. The output includes an intercept estimate that indicates where the linear regression line
+# intercepts with the Y axis and an X estimate that indicates that for every centimeter of petal length the petal width
+# will be increased by that amount of centimeters
+# summary(linearModel)

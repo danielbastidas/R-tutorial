@@ -74,6 +74,7 @@ partition.tree(
 
 # predict with the model. Notice that we are using the test set to validate our model. The type argument
 # indicates that it is classification
+# cluster analysis
 predictions <- predict(
   object = model,
   newdata = test,
