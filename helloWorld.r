@@ -393,7 +393,7 @@ rs <- dbSendQuery(con, "select * from crew_members")
 fetch(rs)
 dbClearResult(rs)
 
-# count missing values in a data frame
+# count missing values in a data frame omit
 sum(is.na(theDataFrame))
 
 # exclude observations with missing values from the data frame
@@ -675,3 +675,34 @@ cor(
 # intercepts with the Y axis and an X estimate that indicates that for every centimeter of petal length the petal width
 # will be increased by that amount of centimeters
 # summary(linearModel)
+
+# Create a k-means cluster. The bigger the nstart parameter the more accurate the cluster will be but also will require 
+# more time
+clusters <- kmeans(
+  x = iris[,1:4],
+  centers = 3,
+  nstart = 10
+)
+
+# plot each cluster as a shape. pch stands for plot character
+plot(
+  x =iris$Petal.Length,
+  y = iris$Petal.Width,
+  col = as.numeric(iris$Species),
+  pch = clusters$cluster
+)
+
+# plot centroid of clusters
+points(
+  x = clusters$centers[,"Petal.Length"],
+  y = clusters$centers[,"Petal.Width"],
+  pch = 4,
+  lwd = 4,
+  col = "blue"
+)
+
+# view a table of the clusters to determine how many species were correctly and incorrectly classified
+table(
+  x = clusters$cluster,
+  y = iris$Species
+)

@@ -103,3 +103,9 @@ setwd("/home/danielbastidas/git-repo/R-tutorial")
 
 # save the tree model so it can be used later
 save(model, file = "Tree.RData")
+
+# plot all data in the iris data set using different colors for each species
+plot(
+  x = iris[1:4],
+  col = as.integer(iris$Species)
+)
