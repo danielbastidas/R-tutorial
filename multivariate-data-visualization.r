@@ -1742,7 +1742,7 @@ corpus <- Corpus(VectorSource(clean_text))
 tdm = TermDocumentMatrix(corpus, control = list(removePunctuation = TRUE,
       stopwords("english"), removeNumbers = TRUE, tolower = TRUE))
 
-#we define tdm as matrix
+# we define tdm as matrix
 m = as.matrix(tdm) 
 
 #now we get the word orders in decreasing order
